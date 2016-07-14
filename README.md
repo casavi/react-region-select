@@ -1,6 +1,8 @@
 # React Region Select
 
-![](https://github.com/casavi/react-region-select/blob/master/demo.gif?raw=true)
+[![React Region Select on NPM](https://img.shields.io/npm/v/react-region-select.svg)](https://www.npmjs.com/package/react-region-select)
+
+![React Region Select Demo gif](https://github.com/casavi/react-region-select/blob/master/demo.gif?raw=true)
 
 ## Usage
 
