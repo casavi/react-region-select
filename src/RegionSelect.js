@@ -1,0 +1,387 @@
+import React, { Component, PropTypes } from 'react';
+
+export default class RegionSelect extends Component {
+	constructor (props) {
+		super(props);
+		this.onComponentMouseTouchDown = this.onComponentMouseTouchDown.bind(this);
+		this.onDocMouseTouchMove = this.onDocMouseTouchMove.bind(this);
+		this.onDocMouseTouchEnd = this.onDocMouseTouchEnd.bind(this);
+		this.onRegionMoveStart = this.onRegionMoveStart.bind(this);
+		this.regionCounter = 0;
+	}
+	componentDidMount() {
+		document.addEventListener('mousemove', this.onDocMouseTouchMove);
+		document.addEventListener('touchmove', this.onDocMouseTouchMove);
+
+		document.addEventListener('mouseup', this.onDocMouseTouchEnd);
+		document.addEventListener('touchend', this.onDocMouseTouchEnd);
+		document.addEventListener('touchcancel', this.onDocMouseTouchEnd);
+	}
+	componentWillUnmount() {
+		document.removeEventListener('mousemove', this.onDocMouseTouchMove);
+		document.removeEventListener('touchmove', this.onDocMouseTouchMove);
+
+		document.removeEventListener('mouseup', this.onDocMouseTouchEnd);
+		document.removeEventListener('touchend', this.onDocMouseTouchEnd);
+		document.removeEventListener('touchcancel', this.onDocMouseTouchEnd);
+	}
+	getClientPos(e) {
+		let pageX, pageY;
+
+		if (e.touches) {
+			pageX = e.touches[0].pageX;
+			pageY = e.touches[0].pageY;
+		} else {
+			pageX = e.pageX;
+			pageY = e.pageY;
+		}
+
+		return {
+			x: pageX,
+			y: pageY
+		};
+	}
+	onDocMouseTouchMove (event) {
+		if (!this.isChanging) {
+			return;
+		}
+		const index = this.regionChangeIndex;
+		const updatingRegion = this.props.regions[index];
+		const clientPos = this.getClientPos(event);
+		const regionChangeData = this.regionChangeData;
+
+		let x, y, width, height;
+		if (!regionChangeData.isMove) {
+			let x1Pc, y1Pc, x2Pc, y2Pc;
+			x1Pc = (regionChangeData.clientPosXStart - regionChangeData.imageOffsetLeft) / regionChangeData.imageWidth * 100;
+			y1Pc = (regionChangeData.clientPosYStart - regionChangeData.imageOffsetTop) / regionChangeData.imageHeight * 100;
+			x2Pc = (clientPos.x - regionChangeData.imageOffsetLeft) / regionChangeData.imageWidth * 100;
+			y2Pc = (clientPos.y - regionChangeData.imageOffsetTop) / regionChangeData.imageHeight * 100;
+			x = Math.min(x1Pc, x2Pc);
+			y = Math.min(y1Pc, y2Pc);
+			width = Math.abs(x1Pc - x2Pc);
+			height = Math.abs(y1Pc - y2Pc);
+		} else {
+			x = (clientPos.x + regionChangeData.clientPosXOffset - regionChangeData.imageOffsetLeft) / regionChangeData.imageWidth * 100;
+			y = (clientPos.y + regionChangeData.clientPosYOffset - regionChangeData.imageOffsetTop) / regionChangeData.imageHeight * 100;
+			width = updatingRegion.width;
+			height = updatingRegion.height;
+		}
+
+		const rect = {
+			x: x,
+			y: y,
+			width: width,
+			height: height
+		};
+		this.props.onChange([
+			...this.props.regions.slice(0, index),
+			Object.assign({}, updatingRegion, rect),
+			...this.props.regions.slice(index + 1)
+		]);
+	}
+	onDocMouseTouchEnd () {
+		if (this.isChanging) {
+			this.isChanging = false;
+			const index = this.regionChangeIndex;
+			const updatingRegion = this.props.regions[index];
+			const changes = {
+				new: false
+			};
+			this.regionChangeIndex = null;
+			this.regionChangeData = null;
+			this.props.onChange([
+				...this.props.regions.slice(0, index),
+				Object.assign({}, updatingRegion, changes),
+				...this.props.regions.slice(index + 1)
+			]);
+		}
+	}
+	onComponentMouseTouchDown (event) {
+		if (event.target.dataset.wrapper || event.target.dataset.dir || isSubElement(event.target, (el) => el.dataset && el.dataset.wrapper)) {
+			return;
+		}
+		event.preventDefault();
+		const clientPos = this.getClientPos(event);
+		const imageOffset = this.getElementOffset(this.refs.image);
+		const xPc = (clientPos.x - imageOffset.left) / this.refs.image.offsetWidth * 100;
+		const yPc = (clientPos.y - imageOffset.top) / this.refs.image.offsetHeight * 100;
+		this.isChanging = true;
+		const rect = {
+			x: xPc,
+			y: yPc,
+			width: 0,
+			height: 0,
+			new: true,
+			data: { index: this.regionCounter }
+		};
+		this.regionCounter += 1;
+		this.regionChangeData = {
+			imageOffsetLeft: imageOffset.left,
+			imageOffsetTop: imageOffset.top,
+			clientPosXStart: clientPos.x,
+			clientPosYStart: clientPos.y,
+			imageWidth: this.refs.image.offsetWidth,
+			imageHeight: this.refs.image.offsetHeight,
+			isMove: false
+		};
+
+		if (this.props.regions.length < this.props.maxRegions) {
+			this.props.onChange(this.props.regions.concat(rect));
+			this.regionChangeIndex = this.props.regions.length;
+		} else {
+			this.props.onChange([
+				...this.props.regions.slice(0, this.props.maxRegions - 1),
+				rect
+			]);
+			this.regionChangeIndex = this.props.maxRegions - 1;
+		}
+	}
+	getElementOffset (el) {
+		const rect = el.getBoundingClientRect();
+		const docEl = document.documentElement;
+
+		const rectTop = rect.top + window.pageYOffset - docEl.clientTop;
+		const rectLeft = rect.left + window.pageXOffset - docEl.clientLeft;
+
+		return {
+			top: rectTop,
+			left: rectLeft
+		};
+	}
+	onRegionMoveStart (event, index) {
+		if (!event.target.dataset.wrapper && !event.target.dataset.dir) {
+			return;
+		}
+		event.preventDefault();
+
+		const clientPos = this.getClientPos(event);
+		const imageOffset = this.getElementOffset(this.refs.image);
+
+		let clientPosXStart, clientPosYStart;
+
+		const currentRegion = this.props.regions[index];
+		const regionLeft = (currentRegion.x / 100 * this.refs.image.offsetWidth) + imageOffset.left;
+		const regionTop = (currentRegion.y / 100 * this.refs.image.offsetHeight) + imageOffset.top;
+		const regionWidth = (currentRegion.width / 100 * this.refs.image.offsetWidth);
+		const regionHeight = (currentRegion.height / 100 * this.refs.image.offsetHeight);
+		const clientPosDiffX = regionLeft - clientPos.x;
+		const clientPosDiffY = regionTop - clientPos.y;
+
+		const resizeDir = event.target.dataset.dir;
+
+		if (resizeDir) {
+			if (resizeDir === 'se') {
+				clientPosXStart = regionLeft;
+				clientPosYStart = regionTop;
+			} else if (resizeDir === 'sw') {
+				clientPosXStart = regionLeft + regionWidth;
+				clientPosYStart = regionTop;
+			} else if (resizeDir === 'nw') {
+				clientPosXStart = regionLeft + regionWidth;
+				clientPosYStart = regionTop + regionHeight;
+			} else if (resizeDir === 'ne') {
+				clientPosXStart = regionLeft;
+				clientPosYStart = regionTop + regionHeight;
+			}
+		} else {
+			clientPosXStart = clientPos.x;
+			clientPosYStart = clientPos.y;
+		}
+
+
+		this.isChanging = true;
+		this.regionChangeData = {
+			imageOffsetLeft: imageOffset.left,
+			imageOffsetTop: imageOffset.top,
+			clientPosXStart: clientPosXStart,
+			clientPosYStart: clientPosYStart,
+			clientPosXOffset: clientPosDiffX,
+			clientPosYOffset: clientPosDiffY,
+			imageWidth: this.refs.image.offsetWidth,
+			imageHeight: this.refs.image.offsetHeight,
+			isMove: resizeDir ? false : true,
+			resizeDir: resizeDir
+		};
+
+		this.regionChangeIndex = index;
+	}
+	renderRect (rect, index) {
+		return <Region
+			x={rect.x}
+			y={rect.y}
+			width={rect.width}
+			height={rect.height}
+			handles={!rect.new}
+			data={rect.data}
+			key={index}
+			index={index}
+			dataRenderer={this.props.regionRenderer}
+			onCropStart={(event) => this.onRegionMoveStart(event, index)}
+			changing={index === this.regionChangeIndex}
+		/>;
+	}
+	render () {
+		const regions = this.props.regions;
+		return (
+			<div
+				ref='image'
+				style={Object.assign({}, style.RegionSelect, this.props.style)}
+				className={this.props.className}
+				onTouchStart={this.onComponentMouseTouchDown}
+				onMouseDown={this.onComponentMouseTouchDown}>
+				{regions.map(this.renderRect.bind(this))}
+				{this.props.debug
+					? <table style={{position:'absolute', right: 0, top: 0}}>
+							<tbody>
+								{regions.map((rect, index) => {
+									return (
+										<tr key={index}>
+											<td>x: {Math.round(rect.x, 1)}</td>
+											<td>y: {Math.round(rect.y, 1)}</td>
+											<td>width: {Math.round(rect.width, 1)}</td>
+											<td>height: {Math.round(rect.height, 1)}</td>
+										</tr>
+									);
+								})}
+							</tbody>
+						</table>
+					: null }
+				{this.props.children}
+			</div>
+		);
+	}
+}
+RegionSelect.propTypes = {
+	regions: PropTypes.array,
+	children: PropTypes.object,
+	onChange: PropTypes.func.isRequired,
+	regionRenderer: PropTypes.func,
+	maxRegions: PropTypes.number,
+	debug: PropTypes.bool,
+	className: PropTypes.string,
+	style: PropTypes.object
+};
+RegionSelect.defaultProps = {
+	maxRegions: Infinity,
+	debug: false,
+	regions: []
+};
+
+class Region extends Component {
+	constructor (props) {
+		super(props);
+	}
+	renderHandles () {
+		return (
+			<div>
+				<div data-dir='se' style={style.RegionHandleSE} />
+				<div data-dir='sw' style={style.RegionHandleSW} />
+				<div data-dir='nw' style={style.RegionHandleNW} />
+				<div data-dir='ne' style={style.RegionHandleNE} />
+			</div>
+		);
+	}
+	render () {
+		const localStyle = {
+			width: this.props.width + '%',
+			height: this.props.height + '%',
+			left: `${this.props.x}%`,
+			top: `${this.props.y}%`
+		};
+		const dataRenderArgs = {
+			data: this.props.data,
+			isChanging: this.props.changing
+		};
+		return (
+			<div
+				style={Object.assign({}, style.Region, localStyle)}
+				onMouseDown={this.props.onCropStart}
+				onTouchStart={this.props.onCropStart}
+				data-wrapper="wrapper"
+				>
+				{this.props.handles ? this.renderHandles() : null}
+				{this.props.dataRenderer ? this.props.dataRenderer(dataRenderArgs) : null}
+			</div>
+		);
+	}
+}
+Region.propTypes = {
+	x: PropTypes.number.isRequired,
+	y: PropTypes.number.isRequired,
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
+	index: PropTypes.number.isRequired,
+	onCropStart: PropTypes.func.isRequired,
+	handles: PropTypes.bool,
+	changing: PropTypes.bool,
+	dataRenderer: PropTypes.func,
+	data: PropTypes.obj,
+};
+
+const handleSize = 8;
+const style = {
+	Region: {
+		position: 'absolute',
+		border: '1px dashed rgba(0,0,0,0.5)',
+		outline: '1px dashed rgba(255,255,255,0.5)',
+		cursor: 'move'
+	},
+	RegionHandleSE: {
+		position: 'absolute',
+		bottom: -1 * handleSize/2,
+		right: -1 * handleSize/2,
+		width: handleSize,
+		height: handleSize,
+		outline: '1px solid rgba(0,0,0,0.5)',
+		border: '1px solid rgba(255,255,255,0.5)',
+		cursor: 'se-resize'
+	},
+	RegionHandleSW: {
+		position: 'absolute',
+		bottom: -1 * handleSize/2,
+		left: -1 * handleSize/2,
+		width: handleSize,
+		height: handleSize,
+		outline: '1px solid rgba(0,0,0,0.5)',
+		border: '1px solid rgba(255,255,255,0.5)',
+		cursor: 'sw-resize'
+	},
+	RegionHandleNW: {
+		position: 'absolute',
+		top: -1 * handleSize/2,
+		left: -1 * handleSize/2,
+		width: handleSize,
+		height: handleSize,
+		outline: '1px solid rgba(0,0,0,0.5)',
+		border: '1px solid rgba(255,255,255,0.5)',
+		cursor: 'nw-resize'
+	},
+	RegionHandleNE: {
+		position: 'absolute',
+		top: -1 * handleSize/2,
+		right: -1 * handleSize/2,
+		width: handleSize,
+		height: handleSize,
+		outline: '1px solid rgba(0,0,0,0.5)',
+		border: '1px solid rgba(255,255,255,0.5)',
+		cursor: 'ne-resize'
+	},
+	RegionSelect: {
+		position: 'relative'
+	}
+};
+
+function isSubElement (el, check) {
+	if (el === null) {
+		return false;
+	} else if (check(el)) {
+		return true;
+	} else {
+		return isSubElement(el.parentNode, check);
+	}
+}
+
+// support both es6 modules and common js
+module.exports = RegionSelect;
+module.exports.default = RegionSelect;

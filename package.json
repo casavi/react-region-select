@@ -1,0 +1,52 @@
+{
+  "name": "react-region-select",
+  "version": "1.0.0",
+  "description": "Multi region selection (i.e. on images)",
+  "main": "./lib/RegionSelect.js",
+  "scripts": {
+    "start": "node server.js",
+    "lint": "eslint src",
+    "build": "babel src --out-dir lib --ignore example",
+    "prepublish": "npm run -s build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/casavi/react-region-select.git"
+  },
+  "keywords": [
+    "react",
+    "reactjs",
+    "region",
+    "crop",
+    "select"
+  ],
+  "author": "David Langer <david@casavi.de> (http://github.com/davidlanger)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/casavi/react-region-select/issues"
+  },
+  "homepage": "https://github.com/casavi/react-region-select",
+  "devDependencies": {
+    "babel-cli": "^6.10.1",
+    "babel-core": "^6.0.20",
+    "babel-eslint": "^6.1.2",
+    "babel-loader": "^6.0.1",
+    "babel-preset-es2015": "^6.0.15",
+    "babel-preset-react": "^6.0.15",
+    "babel-preset-stage-0": "^6.0.15",
+    "css-loader": "^0.23.1",
+    "eslint": "^3.0.0",
+    "eslint-plugin-react": "^5.2.2",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "node-sass": "^3.8.0",
+    "react-hot-loader": "^1.3.0",
+    "sass-loader": "^4.0.0",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.13.1",
+    "webpack-dev-server": "^1.12.1"
+  },
+  "dependencies": {
+    "react": "^0.14.6",
+    "react-dom": "^0.14.6"
+  }
+}
