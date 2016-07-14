@@ -25,7 +25,12 @@ import ReactRegionSelect from 'react-region-select';
 This is "dumb component", meaning it will not track it's internal state (the regions). The outer component needs to do
 that. This means implementing `onChange` and managing the `regions` (see example).
 
-Place an image or anything else into it to draw rectangular regions above it. It supports a `regionRenderer` to draw additional component per region.
+Place an image or anything else as children to draw rectangular regions above it. It supports rendering custom componentes
+per region (see `regionRenderer`).
+
+Homepage: [casavi.de](http://casavi.de/)  
+Author: [David Langer](https://github.com/davidlanger)  
+Contact us: <hello@casavi.de>  
 
 ## API
 
