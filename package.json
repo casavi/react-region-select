@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "lint": "eslint src",
-    "build": "babel src --out-dir lib --ignore example",
+    "build": "env babel src --out-dir lib --ignore example",
     "prepublish": "npm run -s build"
   },
   "repository": {
@@ -43,10 +43,14 @@
     "sass-loader": "^4.0.0",
     "style-loader": "^0.13.0",
     "webpack": "^1.13.1",
-    "webpack-dev-server": "^1.12.1"
-  },
-  "dependencies": {
+    "webpack-dev-server": "^1.12.1",
     "react": "^0.14.6",
     "react-dom": "^0.14.6"
+  },
+  "peerDependencies": {
+    "react": "^0.14.6"
+  },
+  "dependencies": {
+    "object-assign": "*"
   }
 }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import objectAssign from 'object-assign';
 import RegionSelect from '../RegionSelect';
 
 require('../style.scss');
@@ -7,6 +8,7 @@ class App extends Component {
 	constructor (props) {
 		super(props);
 		this.regionRenderer = this.regionRenderer.bind(this);
+		this.onChange = this.onChange.bind(this);
 		this.state = {
 			regions: []
 		};
@@ -20,14 +22,14 @@ class App extends Component {
 		const region = this.state.regions[index];
 		this.onChange([
 			...this.state.regions.slice(0, index),
-			Object.assign({}, region, {
-				data: Object.assign({}, region.data, { dataType: event.target.value })
+			objectAssign({}, region, {
+				data: objectAssign({}, region.data, { dataType: event.target.value })
 			}),
 			...this.state.regions.slice(index + 1)
 		]);
 	}
 	regionRenderer (regionProps) {
-		if (!regionProps.changing) {
+		if (!regionProps.isChanging) {
 			return (
 				<div style={{ position: 'absolute', right: 0, bottom: '-1.5em' }}>
 					<select onChange={(event) => this.changeRegionData(regionProps.index, event)} value={regionProps.data.dataType}>
@@ -42,7 +44,7 @@ class App extends Component {
 	render() {
 		return (
 			<div>
-				<RegionSelect maxRegions={1} regions={this.state.regions} onChange={this.onChange.bind(this)} regionRenderer={this.regionRenderer}>
+				<RegionSelect maxRegions={1} regions={this.state.regions} onChange={this.onChange} regionRenderer={this.regionRenderer}>
 					<img src='/static/example-doc.jpg' width='700px'/>
 				</RegionSelect>
 			</div>

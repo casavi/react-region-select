@@ -1,6 +1,9 @@
 import React, { Component, PropTypes } from 'react';
+import objectAssign from 'object-assign';
+import Region from './Region';
+import style from './style';
 
-export default class RegionSelect extends Component {
+class RegionSelect extends Component {
 	constructor (props) {
 		super(props);
 		this.onComponentMouseTouchDown = this.onComponentMouseTouchDown.bind(this);
@@ -76,7 +79,7 @@ export default class RegionSelect extends Component {
 		};
 		this.props.onChange([
 			...this.props.regions.slice(0, index),
-			Object.assign({}, updatingRegion, rect),
+			objectAssign({}, updatingRegion, rect),
 			...this.props.regions.slice(index + 1)
 		]);
 	}
@@ -92,7 +95,7 @@ export default class RegionSelect extends Component {
 			this.regionChangeData = null;
 			this.props.onChange([
 				...this.props.regions.slice(0, index),
-				Object.assign({}, updatingRegion, changes),
+				objectAssign({}, updatingRegion, changes),
 				...this.props.regions.slice(index + 1)
 			]);
 		}
@@ -226,7 +229,7 @@ export default class RegionSelect extends Component {
 		return (
 			<div
 				ref='image'
-				style={Object.assign({}, style.RegionSelect, this.props.style)}
+				style={objectAssign({}, style.RegionSelect, this.props.style)}
 				className={this.props.className}
 				onTouchStart={this.onComponentMouseTouchDown}
 				onMouseDown={this.onComponentMouseTouchDown}>
@@ -266,110 +269,6 @@ RegionSelect.defaultProps = {
 	maxRegions: Infinity,
 	debug: false,
 	regions: []
-};
-
-class Region extends Component {
-	constructor (props) {
-		super(props);
-	}
-	renderHandles () {
-		return (
-			<div>
-				<div data-dir='se' style={style.RegionHandleSE} />
-				<div data-dir='sw' style={style.RegionHandleSW} />
-				<div data-dir='nw' style={style.RegionHandleNW} />
-				<div data-dir='ne' style={style.RegionHandleNE} />
-			</div>
-		);
-	}
-	render () {
-		const localStyle = {
-			width: this.props.width + '%',
-			height: this.props.height + '%',
-			left: `${this.props.x}%`,
-			top: `${this.props.y}%`
-		};
-		const dataRenderArgs = {
-			data: this.props.data,
-			isChanging: this.props.changing
-		};
-		return (
-			<div
-				style={Object.assign({}, style.Region, localStyle)}
-				onMouseDown={this.props.onCropStart}
-				onTouchStart={this.props.onCropStart}
-				data-wrapper="wrapper"
-				>
-				{this.props.handles ? this.renderHandles() : null}
-				{this.props.dataRenderer ? this.props.dataRenderer(dataRenderArgs) : null}
-			</div>
-		);
-	}
-}
-Region.propTypes = {
-	x: PropTypes.number.isRequired,
-	y: PropTypes.number.isRequired,
-	width: PropTypes.number.isRequired,
-	height: PropTypes.number.isRequired,
-	index: PropTypes.number.isRequired,
-	onCropStart: PropTypes.func.isRequired,
-	handles: PropTypes.bool,
-	changing: PropTypes.bool,
-	dataRenderer: PropTypes.func,
-	data: PropTypes.obj,
-};
-
-const handleSize = 8;
-const style = {
-	Region: {
-		position: 'absolute',
-		border: '1px dashed rgba(0,0,0,0.5)',
-		outline: '1px dashed rgba(255,255,255,0.5)',
-		cursor: 'move'
-	},
-	RegionHandleSE: {
-		position: 'absolute',
-		bottom: -1 * handleSize/2,
-		right: -1 * handleSize/2,
-		width: handleSize,
-		height: handleSize,
-		outline: '1px solid rgba(0,0,0,0.5)',
-		border: '1px solid rgba(255,255,255,0.5)',
-		cursor: 'se-resize'
-	},
-	RegionHandleSW: {
-		position: 'absolute',
-		bottom: -1 * handleSize/2,
-		left: -1 * handleSize/2,
-		width: handleSize,
-		height: handleSize,
-		outline: '1px solid rgba(0,0,0,0.5)',
-		border: '1px solid rgba(255,255,255,0.5)',
-		cursor: 'sw-resize'
-	},
-	RegionHandleNW: {
-		position: 'absolute',
-		top: -1 * handleSize/2,
-		left: -1 * handleSize/2,
-		width: handleSize,
-		height: handleSize,
-		outline: '1px solid rgba(0,0,0,0.5)',
-		border: '1px solid rgba(255,255,255,0.5)',
-		cursor: 'nw-resize'
-	},
-	RegionHandleNE: {
-		position: 'absolute',
-		top: -1 * handleSize/2,
-		right: -1 * handleSize/2,
-		width: handleSize,
-		height: handleSize,
-		outline: '1px solid rgba(0,0,0,0.5)',
-		border: '1px solid rgba(255,255,255,0.5)',
-		cursor: 'ne-resize'
-	},
-	RegionSelect: {
-		position: 'relative'
-	}
 };
 
 function isSubElement (el, check) {
