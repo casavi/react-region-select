@@ -1,5 +1,7 @@
 # React Region Select
 
+![](https://github.com/casavi/react-region-select/blob/master/demo.gif?raw=true)
+
 ## Usage
 
 ```jsx
