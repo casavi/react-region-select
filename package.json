@@ -44,11 +44,11 @@
     "style-loader": "^0.13.0",
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.12.1",
-    "react": "^0.14.6",
-    "react-dom": "^0.14.6"
+    "react": "^15.x",
+    "react-dom": "^15.x"
   },
   "peerDependencies": {
-    "react": "^0.14.6"
+    "react": "^0.14.6 || 15.x"
   },
   "dependencies": {
     "object-assign": "*"
