@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import objectAssign from 'object-assign';
 import Region from './Region';
 import style from './style';
