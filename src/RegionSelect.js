@@ -75,7 +75,8 @@ class RegionSelect extends Component {
 			x: x,
 			y: y,
 			width: width,
-			height: height
+			height: height,
+			isChanging: true
 		};
 		this.props.onChange([
 			...this.props.regions.slice(0, index),
@@ -89,7 +90,8 @@ class RegionSelect extends Component {
 			const index = this.regionChangeIndex;
 			const updatingRegion = this.props.regions[index];
 			const changes = {
-				new: false
+				new: false,
+				isChanging: false
 			};
 			this.regionChangeIndex = null;
 			this.regionChangeData = null;
