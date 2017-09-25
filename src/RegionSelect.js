@@ -259,7 +259,7 @@ class RegionSelect extends Component {
 }
 RegionSelect.propTypes = {
 	regions: PropTypes.array,
-	children: PropTypes.object,
+	children: PropTypes.any,
 	onChange: PropTypes.func.isRequired,
 	regionRenderer: PropTypes.func,
 	maxRegions: PropTypes.number,
