@@ -118,7 +118,8 @@ class RegionSelect extends Component {
 			width: 0,
 			height: 0,
 			new: true,
-			data: { index: this.regionCounter }
+			data: { index: this.regionCounter },
+			isChanging: true
 		};
 		this.regionCounter += 1;
 		this.regionChangeData = {
