@@ -71,6 +71,10 @@ You can use isChanging to hide complex UI while the user is changing the region.
 
 Display a table with information about each region. Useful for debugging.
 
+#### constraint (bool)
+
+Constrain selection to underlying children. Default: false.
+
 #### className (string)
 
 Use for styling the outer layer
