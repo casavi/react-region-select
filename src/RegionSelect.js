@@ -70,10 +70,12 @@ class RegionSelect extends Component {
 			y = (clientPos.y + regionChangeData.clientPosYOffset - regionChangeData.imageOffsetTop) / regionChangeData.imageHeight * 100;
 			width = updatingRegion.width;
 			height = updatingRegion.height;
-			if (x + width >= 100) { x = Math.round(100 - width) }
-			if (y + height >= 100) { y = Math.round(100 - height)}
-			if (x <= 0) { x = 0 }
-			if (y <= 0) { y = 0 }
+			if(this.props.constraint){
+				if (x + width >= 100) { x = Math.round(100 - width) }
+				if (y + height >= 100) { y = Math.round(100 - height)}
+				if (x <= 0) { x = 0 }
+				if (y <= 0) { y = 0 }
+			}
 		}
 
 		const rect = {
@@ -264,6 +266,7 @@ class RegionSelect extends Component {
 	}
 }
 RegionSelect.propTypes = {
+	constraint: PropTypes.bool,
 	regions: PropTypes.array,
 	children: PropTypes.any,
 	onChange: PropTypes.func.isRequired,
@@ -276,7 +279,8 @@ RegionSelect.propTypes = {
 RegionSelect.defaultProps = {
 	maxRegions: Infinity,
 	debug: false,
-	regions: []
+	regions: [],
+	constraint: false
 };
 
 function isSubElement (el, check) {
