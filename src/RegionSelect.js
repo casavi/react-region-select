@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import { PropTypes } from 'prop-types'; 
 import objectAssign from 'object-assign';
 import Region from './Region';
 import style from './style';
@@ -69,6 +70,10 @@ class RegionSelect extends Component {
 			y = (clientPos.y + regionChangeData.clientPosYOffset - regionChangeData.imageOffsetTop) / regionChangeData.imageHeight * 100;
 			width = updatingRegion.width;
 			height = updatingRegion.height;
+			if (x + width >= 100) { x = Math.round(100 - width) }
+			if (y + height >= 100) { y = Math.round(100 - height)}
+			if (x <= 0) { x = 0 }
+			if (y <= 0) { y = 0 }
 		}
 
 		const rect = {
