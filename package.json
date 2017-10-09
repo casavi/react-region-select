@@ -51,6 +51,7 @@
     "react": "^0.14.6 || 15.x"
   },
   "dependencies": {
-    "object-assign": "*"
+    "object-assign": "*",
+    "prop-types": "^15.6.0"
   }
 }

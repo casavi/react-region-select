@@ -47,7 +47,8 @@ const style = {
 		cursor: 'ne-resize'
 	},
 	RegionSelect: {
-		position: 'relative'
+		position: 'relative',
+		display: 'inline-block'		
 	}
 };
 
