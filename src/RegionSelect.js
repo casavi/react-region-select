@@ -46,14 +46,12 @@ class RegionSelect extends Component {
 		};
 	}
 	onDocMouseTouchMove (event) {
-		if (!this.isChanging) {
-			return;
-		}
+		if (!this.isChanging) {return}
 		const index = this.regionChangeIndex;
 		const updatingRegion = this.props.regions[index];
 		const clientPos = this.getClientPos(event);
 		const regionChangeData = this.regionChangeData;
-
+		
 		let x, y, width, height;
 		if (!regionChangeData.isMove) {
 			let x1Pc, y1Pc, x2Pc, y2Pc;
@@ -65,12 +63,19 @@ class RegionSelect extends Component {
 			y = Math.min(y1Pc, y2Pc);
 			width = Math.abs(x1Pc - x2Pc);
 			height = Math.abs(y1Pc - y2Pc);
+			if(this.props.constraint){
+				if (x2Pc >= 100) { x = x1Pc; width = 100 - x1Pc; }				
+				if (y2Pc >= 100) { y = y1Pc; height = 100 - y1Pc; }
+				if (x2Pc <= 0) { x = 0; width = x1Pc; }
+				if (y2Pc <= 0) { y = 0; height = y1Pc; }
+			}
 		} else {
 			x = (clientPos.x + regionChangeData.clientPosXOffset - regionChangeData.imageOffsetLeft) / regionChangeData.imageWidth * 100;
 			y = (clientPos.y + regionChangeData.clientPosYOffset - regionChangeData.imageOffsetTop) / regionChangeData.imageHeight * 100;
 			width = updatingRegion.width;
 			height = updatingRegion.height;
 			if(this.props.constraint){
+				console.log('here')
 				if (x + width >= 100) { x = Math.round(100 - width) }
 				if (y + height >= 100) { y = Math.round(100 - height)}
 				if (x <= 0) { x = 0 }
@@ -92,6 +97,7 @@ class RegionSelect extends Component {
 		]);
 	}
 	onDocMouseTouchEnd () {
+		
 		if (this.isChanging) {
 			this.isChanging = false;
 			const index = this.regionChangeIndex;
