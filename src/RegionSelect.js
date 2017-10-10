@@ -75,7 +75,6 @@ class RegionSelect extends Component {
 			width = updatingRegion.width;
 			height = updatingRegion.height;
 			if(this.props.constraint){
-				console.log('here')
 				if (x + width >= 100) { x = Math.round(100 - width) }
 				if (y + height >= 100) { y = Math.round(100 - height)}
 				if (x <= 0) { x = 0 }
