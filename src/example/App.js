@@ -45,7 +45,7 @@ class App extends Component {
 		return (
 			<div style={{textAlign: 'center'}}>
 				<RegionSelect constraint={true} maxRegions={1} regions={this.state.regions} onChange={this.onChange} regionRenderer={this.regionRenderer}>
-					<img src='/static/example-doc.jpg' width='700px' style={{border: '1px black solid'}}/>
+					<img src='/static/example-doc.jpg' width='700px'/>
 				</RegionSelect>
 			</div>
 		);

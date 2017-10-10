@@ -51,7 +51,6 @@ class RegionSelect extends Component {
 		const updatingRegion = this.props.regions[index];
 		const clientPos = this.getClientPos(event);
 		const regionChangeData = this.regionChangeData;
-		
 		let x, y, width, height;
 		if (!regionChangeData.isMove) {
 			let x1Pc, y1Pc, x2Pc, y2Pc;
