@@ -239,7 +239,7 @@ class RegionSelect extends Component {
 		return (
 			<div
 				ref='image'
-				style={objectAssign({}, style.RegionSelect, this.props.style)}
+				style={objectAssign({}, style.RegionSelect, this.props.style, this.props.constraint? { display: 'inline-block'}: null)}
 				className={this.props.className}
 				onTouchStart={this.onComponentMouseTouchDown}
 				onMouseDown={this.onComponentMouseTouchDown}>
