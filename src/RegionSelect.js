@@ -71,10 +71,10 @@ class RegionSelect extends Component {
 			width = updatingRegion.width;
 			height = updatingRegion.height;
 			if(this.props.constraint){
-				if (x + width >= 100) { x = Math.round(100 - width) }
-				if (y + height >= 100) { y = Math.round(100 - height)}
-				if (x <= 0) { x = 0 }
-				if (y <= 0) { y = 0 }
+				if (x + width >= 100) { x = Math.round(100 - width); }
+				if (y + height >= 100) { y = Math.round(100 - height); }
+				if (x <= 0) { x = 0; }
+				if (y <= 0) { y = 0; }
 			}
 		}
 
@@ -229,6 +229,7 @@ class RegionSelect extends Component {
 			data={rect.data}
 			key={index}
 			index={index}
+			customStyle={this.props.regionStyle}
 			dataRenderer={this.props.regionRenderer}
 			onCropStart={(event) => this.onRegionMoveStart(event, index)}
 			changing={index === this.regionChangeIndex}
@@ -274,7 +275,8 @@ RegionSelect.propTypes = {
 	maxRegions: PropTypes.number,
 	debug: PropTypes.bool,
 	className: PropTypes.string,
-	style: PropTypes.object
+	style: PropTypes.object,
+	regionStyle: PropTypes.object
 };
 RegionSelect.defaultProps = {
 	maxRegions: Infinity,
