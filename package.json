@@ -1,6 +1,6 @@
 {
   "name": "react-region-select",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Multi region selection (i.e. on images)",
   "main": "./lib/RegionSelect.js",
   "scripts": {
@@ -48,7 +48,7 @@
     "react-dom": "^16.0.0"
   },
   "peerDependencies": {
-    "react": "^0.16.0"
+    "react": "^16.0.0"
   },
   "dependencies": {
     "object-assign": "^4.1.1",
