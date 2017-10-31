@@ -21,11 +21,17 @@ module.exports = {
     })
   ],
   module: {
-    loaders: [{
-      test: /\.js$/,
-      loaders: ['react-hot', 'babel'],
-      include: path.join(__dirname, 'src')
-    },
+    rules: [
+      {
+        test: /\.jsx?$/,
+        use: [{
+          loader: 'babel-loader'
+          }, {
+            loader: 'react-hot-loader/webpack'
+          }
+        ],
+        include: path.join(__dirname, 'src')
+      },
       {
         test: /\.css/,
         loaders: ['style', 'css-loader']
