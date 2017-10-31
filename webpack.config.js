@@ -21,14 +21,34 @@ module.exports = {
     })
   ],
   module: {
-    loaders: [{
-      test: /\.js$/,
-      loaders: ['react-hot', 'babel'],
-      include: path.join(__dirname, 'src')
-    },
+    rules: [
+      {
+        test: /\.jsx?$/,
+        use: [{
+          loader: 'babel-loader'
+          }, {
+            loader: 'react-hot-loader/webpack'
+          }
+        ],
+        include: path.join(__dirname, 'src')
+      },
       {
         test: /\.scss/,
-        loaders: ['style', 'css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]', 'sass']
+        use: [{
+          loader: "style-loader"
+        }, {
+          loader: "css-loader", options: {
+            sourceMap: true
+          }
+        }, {
+          loader: "sass-loader", options: {
+            sourceMap: true,
+            includePaths: [
+              path.join(__dirname, 'src')
+            ]
+          }
+        }],
+        include: path.join(__dirname, 'src')
       }
     ]
   }
