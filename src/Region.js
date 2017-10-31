@@ -29,13 +29,14 @@ class Region extends Component {
 			isChanging: this.props.changing,
 			index: this.props.index
 		};
+
 		return (
 			<div
-				style={objectAssign({}, style.Region, localStyle)}
+				style={objectAssign({}, style.Region, localStyle, this.props.customStyle, this.props.data.regionStyle)}
 				onMouseDown={this.props.onCropStart}
 				onTouchStart={this.props.onCropStart}
 				data-wrapper="wrapper"
-				>
+			>
 				{this.props.handles ? this.renderHandles() : null}
 				{this.props.dataRenderer ? this.props.dataRenderer(dataRenderArgs) : null}
 			</div>
@@ -53,6 +54,7 @@ Region.propTypes = {
 	changing: PropTypes.bool,
 	dataRenderer: PropTypes.func,
 	data: PropTypes.object,
+	customStyle: PropTypes.object
 };
 
 module.exports = Region;

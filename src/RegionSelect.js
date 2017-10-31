@@ -71,10 +71,10 @@ class RegionSelect extends Component {
 			width = updatingRegion.width;
 			height = updatingRegion.height;
 			if(this.props.constraint){
-				if (x + width >= 100) { x = Math.round(100 - width) }
-				if (y + height >= 100) { y = Math.round(100 - height)}
-				if (x <= 0) { x = 0 }
-				if (y <= 0) { y = 0 }
+				if (x + width >= 100) { x = Math.round(100 - width); }
+				if (y + height >= 100) { y = Math.round(100 - height); }
+				if (x <= 0) { x = 0; }
+				if (y <= 0) { y = 0; }
 			}
 		}
 
@@ -229,10 +229,33 @@ class RegionSelect extends Component {
 			data={rect.data}
 			key={index}
 			index={index}
+			customStyle={this.props.regionStyle}
 			dataRenderer={this.props.regionRenderer}
 			onCropStart={(event) => this.onRegionMoveStart(event, index)}
 			changing={index === this.regionChangeIndex}
 		/>;
+	}
+	renderDebug () {
+		if (this.props.debug) {
+			return (
+				<table style={{position:'absolute', right: 0, top: 0}}>
+					<tbody>
+						{this.props.regions.map((rect, index) => {
+							return (
+								<tr key={index}>
+									<td>x: {Math.round(rect.x, 1)}</td>
+									<td>y: {Math.round(rect.y, 1)}</td>
+									<td>width: {Math.round(rect.width, 1)}</td>
+									<td>height: {Math.round(rect.height, 1)}</td>
+								</tr>
+							);
+						})}
+					</tbody>
+				</table>
+			);
+		}
+	
+		return null;
 	}
 	render () {
 		const regions = this.props.regions;
@@ -244,22 +267,7 @@ class RegionSelect extends Component {
 				onTouchStart={this.onComponentMouseTouchDown}
 				onMouseDown={this.onComponentMouseTouchDown}>
 				{regions.map(this.renderRect.bind(this))}
-				{this.props.debug
-					? <table style={{position:'absolute', right: 0, top: 0}}>
-							<tbody>
-								{regions.map((rect, index) => {
-									return (
-										<tr key={index}>
-											<td>x: {Math.round(rect.x, 1)}</td>
-											<td>y: {Math.round(rect.y, 1)}</td>
-											<td>width: {Math.round(rect.width, 1)}</td>
-											<td>height: {Math.round(rect.height, 1)}</td>
-										</tr>
-									);
-								})}
-							</tbody>
-						</table>
-					: null }
+				{this.renderDebug()}
 				{this.props.children}
 			</div>
 		);
@@ -274,7 +282,8 @@ RegionSelect.propTypes = {
 	maxRegions: PropTypes.number,
 	debug: PropTypes.bool,
 	className: PropTypes.string,
-	style: PropTypes.object
+	style: PropTypes.object,
+	regionStyle: PropTypes.object
 };
 RegionSelect.defaultProps = {
 	maxRegions: Infinity,
