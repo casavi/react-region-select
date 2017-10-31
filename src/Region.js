@@ -36,7 +36,7 @@ class Region extends Component {
 				onMouseDown={this.props.onCropStart}
 				onTouchStart={this.props.onCropStart}
 				data-wrapper="wrapper"
-				>
+			>
 				{this.props.handles ? this.renderHandles() : null}
 				{this.props.dataRenderer ? this.props.dataRenderer(dataRenderArgs) : null}
 			</div>

@@ -235,6 +235,28 @@ class RegionSelect extends Component {
 			changing={index === this.regionChangeIndex}
 		/>;
 	}
+	renderDebug () {
+		if (this.props.debug) {
+			return (
+				<table style={{position:'absolute', right: 0, top: 0}}>
+					<tbody>
+						{this.props.regions.map((rect, index) => {
+							return (
+								<tr key={index}>
+									<td>x: {Math.round(rect.x, 1)}</td>
+									<td>y: {Math.round(rect.y, 1)}</td>
+									<td>width: {Math.round(rect.width, 1)}</td>
+									<td>height: {Math.round(rect.height, 1)}</td>
+								</tr>
+							);
+						})}
+					</tbody>
+				</table>
+			);
+		}
+	
+		return null;
+	}
 	render () {
 		const regions = this.props.regions;
 		return (
@@ -245,22 +267,7 @@ class RegionSelect extends Component {
 				onTouchStart={this.onComponentMouseTouchDown}
 				onMouseDown={this.onComponentMouseTouchDown}>
 				{regions.map(this.renderRect.bind(this))}
-				{this.props.debug
-					? <table style={{position:'absolute', right: 0, top: 0}}>
-							<tbody>
-								{regions.map((rect, index) => {
-									return (
-										<tr key={index}>
-											<td>x: {Math.round(rect.x, 1)}</td>
-											<td>y: {Math.round(rect.y, 1)}</td>
-											<td>width: {Math.round(rect.width, 1)}</td>
-											<td>height: {Math.round(rect.height, 1)}</td>
-										</tr>
-									);
-								})}
-							</tbody>
-						</table>
-					: null }
+				{this.renderDebug()}
 				{this.props.children}
 			</div>
 		);
