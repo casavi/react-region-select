@@ -64,13 +64,19 @@ class App extends Component {
 			background: 'rgba(255, 0, 0, 0.5)'
 		};
 
+		const defaultRegionData = {
+			regionStyle,
+			dataType: '3'
+		};
+
 		return (
 			<div style={{ display: 'flex' }}>
 				<div style={{ flexGrow: 1, flexShrink: 1, width: '50%' }}>
 					<RegionSelect
 						maxRegions={1}
 						regions={this.state.regions}
-            regionStyle={regionStyle}
+						regionStyle={regionStyle}
+						regionData={defaultRegionData}
 						constraint
 						onChange={this.onChange}
 						regionRenderer={this.regionRenderer}
