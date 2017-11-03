@@ -64,9 +64,14 @@ class App extends Component {
 			background: 'rgba(255, 0, 0, 0.5)'
 		};
 
+		const defaultRegionData = {
+			regionStyle,
+			dataType: '3'
+		};
+
 		return (
 			<div>
-				<RegionSelect maxRegions={3} regionStyle={regionStyle} regions={this.state.regions} onChange={this.onChange} regionRenderer={this.regionRenderer}>
+				<RegionSelect maxRegions={3} regionData={defaultRegionData} regions={this.state.regions} onChange={this.onChange} regionRenderer={this.regionRenderer}>
 					<img src='/static/example-doc.jpg' width='700px'/>
 				</RegionSelect>
 			</div>

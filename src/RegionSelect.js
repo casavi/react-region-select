@@ -125,7 +125,7 @@ class RegionSelect extends Component {
 			width: 0,
 			height: 0,
 			new: true,
-			data: { index: this.regionCounter },
+			data: { ...this.props.regionData, index: this.regionCounter },
 			isChanging: true
 		};
 		this.regionCounter += 1;
@@ -229,7 +229,6 @@ class RegionSelect extends Component {
 			data={rect.data}
 			key={index}
 			index={index}
-			customStyle={this.props.regionStyle}
 			dataRenderer={this.props.regionRenderer}
 			onCropStart={(event) => this.onRegionMoveStart(event, index)}
 			changing={index === this.regionChangeIndex}
@@ -282,8 +281,7 @@ RegionSelect.propTypes = {
 	maxRegions: PropTypes.number,
 	debug: PropTypes.bool,
 	className: PropTypes.string,
-	style: PropTypes.object,
-	regionStyle: PropTypes.object
+	style: PropTypes.object
 };
 RegionSelect.defaultProps = {
 	maxRegions: Infinity,
