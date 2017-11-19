@@ -9,8 +9,10 @@ class App extends Component {
 		super(props);
 		this.regionRenderer = this.regionRenderer.bind(this);
 		this.onChange = this.onChange.bind(this);
+		this.onChangeZoom = this.onChangeZoom.bind(this);
 		this.state = {
-			regions: []
+			regions: [],
+			zoom: 1
 		};
 	}
 	onChange (regions) {
@@ -59,6 +61,11 @@ class App extends Component {
 			);
 		}
 	}
+	onChangeZoom({ target: { value }}) {
+		this.setState({
+			zoom: parseInt(value)
+		});
+	}
 	render() {
 		const regionStyle = {
 			background: 'rgba(255, 0, 0, 0.5)'
@@ -68,9 +75,11 @@ class App extends Component {
 			regionStyle,
 			dataType: '3'
 		};
+		let { zoom } = this.state;
 
 		return (
 			<div style={{ display: 'flex' }}>
+				<input type="range" min="1" max="5" value={zoom} onChange={this.onChangeZoom} />
 				<div style={{ flexGrow: 1, flexShrink: 1, width: '50%' }}>
 					<RegionSelect
 						maxRegions={1}

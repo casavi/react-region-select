@@ -1,6 +1,6 @@
 {
   "name": "react-region-select",
-  "version": "2.3.2",
+  "version": "2.4.0",
   "description": "Multi region selection (i.e. on images)",
   "main": "./lib/RegionSelect.js",
   "scripts": {

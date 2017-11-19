@@ -19,10 +19,10 @@ class Region extends Component {
 	}
 	render () {
 		const localStyle = {
-			width: this.props.width + '%',
-			height: this.props.height + '%',
-			left: `${this.props.x}%`,
-			top: `${this.props.y}%`
+			width: this.props.width * this.props.zoom + 'px',
+			height: this.props.height * this.props.zoom + 'px',
+			left: `${this.props.x * this.props.zoom}px`,
+			top: `${this.props.y * this.props.zoom}px`
 		};
 		const dataRenderArgs = {
 			data: this.props.data,
@@ -54,7 +54,12 @@ Region.propTypes = {
 	changing: PropTypes.bool,
 	dataRenderer: PropTypes.func,
 	data: PropTypes.object,
-	customStyle: PropTypes.object
+	customStyle: PropTypes.object,
+	zoom: PropTypes.number
+};
+
+Region.defaultProps = {
+	zoom: 1
 };
 
 module.exports = Region;
