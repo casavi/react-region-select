@@ -1,10 +1,18 @@
 const handleSize = 8;
 const style = {
+	ContainerStyle: {
+		width: '100vw',
+		height: '100vh',
+		position: 'relative',
+		overflow: 'auto',
+		border: '1px solid black'
+	},
 	Region: {
 		position: 'absolute',
 		border: '1px dashed rgba(0,0,0,0.5)',
 		outline: '1px dashed rgba(255,255,255,0.5)',
-		cursor: 'move'
+		cursor: 'move',
+		zIndex: '2'
 	},
 	RegionHandleSE: {
 		position: 'absolute',
@@ -47,8 +55,8 @@ const style = {
 		cursor: 'ne-resize'
 	},
 	RegionSelect: {
-		position: 'relative',
-		display: 'inline-block'		
+		display: 'inline-block',
+		overflow: 'hidden'
 	}
 };
 

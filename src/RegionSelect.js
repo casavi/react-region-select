@@ -11,7 +11,10 @@ class RegionSelect extends Component {
 		this.onDocMouseTouchMove = this.onDocMouseTouchMove.bind(this);
 		this.onDocMouseTouchEnd = this.onDocMouseTouchEnd.bind(this);
 		this.onRegionMoveStart = this.onRegionMoveStart.bind(this);
+		this.onImageLoad = this.onImageLoad.bind(this);
 		this.regionCounter = 0;
+		const { props: { src } } = this.props.children;
+		this.imageSrc = src;
 	}
 	componentDidMount() {
 		document.addEventListener('mousemove', this.onDocMouseTouchMove);
@@ -39,10 +42,11 @@ class RegionSelect extends Component {
 			pageX = e.pageX;
 			pageY = e.pageY;
 		}
+		const [{ scrollLeft, scrollTop, offsetLeft, offsetTop }] = document.getElementsByClassName('image-container');
 
 		return {
-			x: pageX,
-			y: pageY
+			x: (pageX + scrollLeft - offsetLeft) / this.props.zoom,
+			y: (pageY + scrollTop - offsetTop) / this.props.zoom 
 		};
 	}
 	onDocMouseTouchMove (event) {
@@ -53,24 +57,26 @@ class RegionSelect extends Component {
 		const updatingRegion = this.props.regions[index];
 		const clientPos = this.getClientPos(event);
 		const regionChangeData = this.regionChangeData;
-
 		let x, y, width, height;
-		if (!regionChangeData.isMove) {
+		if (!regionChangeData.isMove) {			
 			let x1Pc, y1Pc, x2Pc, y2Pc;
-			x1Pc = (regionChangeData.clientPosXStart - regionChangeData.imageOffsetLeft) / regionChangeData.imageWidth * 100;
-			y1Pc = (regionChangeData.clientPosYStart - regionChangeData.imageOffsetTop) / regionChangeData.imageHeight * 100;
-			x2Pc = (clientPos.x - regionChangeData.imageOffsetLeft) / regionChangeData.imageWidth * 100;
-			y2Pc = (clientPos.y - regionChangeData.imageOffsetTop) / regionChangeData.imageHeight * 100;
+			x1Pc = regionChangeData.clientPosXStart;
+			y1Pc = regionChangeData.clientPosYStart;
+			x2Pc = clientPos.x;
+			y2Pc = clientPos.y;
 			x = Math.min(x1Pc, x2Pc);
 			y = Math.min(y1Pc, y2Pc);
 			width = Math.abs(x1Pc - x2Pc);
 			height = Math.abs(y1Pc - y2Pc);
 		} else {
-			x = (clientPos.x + regionChangeData.clientPosXOffset - regionChangeData.imageOffsetLeft) / regionChangeData.imageWidth * 100;
-			y = (clientPos.y + regionChangeData.clientPosYOffset - regionChangeData.imageOffsetTop) / regionChangeData.imageHeight * 100;
+			let diffx = updatingRegion.width / 2;
+			let diffy = updatingRegion.height / 2;
+			x = clientPos.x - diffx;
+			y = clientPos.y - diffy;
+
 			width = updatingRegion.width;
 			height = updatingRegion.height;
-			if(this.props.constraint){
+			if (this.props.constraint){
 				if (x + width >= 100) { x = Math.round(100 - width); }
 				if (y + height >= 100) { y = Math.round(100 - height); }
 				if (x <= 0) { x = 0; }
@@ -115,13 +121,14 @@ class RegionSelect extends Component {
 		}
 		event.preventDefault();
 		const clientPos = this.getClientPos(event);
-		const imageOffset = this.getElementOffset(this.refs.image);
-		const xPc = (clientPos.x - imageOffset.left) / this.refs.image.offsetWidth * 100;
-		const yPc = (clientPos.y - imageOffset.top) / this.refs.image.offsetHeight * 100;
+		const [container] = document.getElementsByClassName('image-container');
+		const { offsetLeft, offsetTop } = container;
+
 		this.isChanging = true;
+
 		const rect = {
-			x: xPc,
-			y: yPc,
+			x: clientPos.x,
+			y: clientPos.y,
 			width: 0,
 			height: 0,
 			new: true,
@@ -130,15 +137,14 @@ class RegionSelect extends Component {
 		};
 		this.regionCounter += 1;
 		this.regionChangeData = {
-			imageOffsetLeft: imageOffset.left,
-			imageOffsetTop: imageOffset.top,
+			imageOffsetLeft: offsetLeft,
+			imageOffsetTop: offsetTop,
 			clientPosXStart: clientPos.x,
 			clientPosYStart: clientPos.y,
-			imageWidth: this.refs.image.offsetWidth,
-			imageHeight: this.refs.image.offsetHeight,
+			imageWidth: container.offsetWidth,
+			imageHeight: container.offsetHeight,
 			isMove: false
 		};
-
 		if (this.props.regions.length < this.props.maxRegions) {
 			this.props.onChange(this.props.regions.concat(rect));
 			this.regionChangeIndex = this.props.regions.length;
@@ -153,13 +159,13 @@ class RegionSelect extends Component {
 	getElementOffset (el) {
 		const rect = el.getBoundingClientRect();
 		const docEl = document.documentElement;
+		const [container] = document.getElementsByClassName('image-container');
 
-		const rectTop = rect.top + window.pageYOffset - docEl.clientTop;
-		const rectLeft = rect.left + window.pageXOffset - docEl.clientLeft;
-
+		const rectTop = rect.top + window.pageYOffset + container.offsetTop - docEl.clientTop;
+		const rectLeft = rect.left + window.pageXOffset + container.offsetLeft - docEl.clientLeft ;
 		return {
-			top: rectTop,
-			left: rectLeft
+			top: rectTop / this.props.zoom,
+			left: rectLeft / this.props.zoom
 		};
 	}
 	onRegionMoveStart (event, index) {
@@ -172,12 +178,11 @@ class RegionSelect extends Component {
 		const imageOffset = this.getElementOffset(this.refs.image);
 
 		let clientPosXStart, clientPosYStart;
-
 		const currentRegion = this.props.regions[index];
-		const regionLeft = (currentRegion.x / 100 * this.refs.image.offsetWidth) + imageOffset.left;
-		const regionTop = (currentRegion.y / 100 * this.refs.image.offsetHeight) + imageOffset.top;
-		const regionWidth = (currentRegion.width / 100 * this.refs.image.offsetWidth);
-		const regionHeight = (currentRegion.height / 100 * this.refs.image.offsetHeight);
+		const regionLeft = currentRegion.x;
+		const regionTop = currentRegion.y;
+		const regionWidth = currentRegion.width;
+		const regionHeight = currentRegion.height;
 		const clientPosDiffX = regionLeft - clientPos.x;
 		const clientPosDiffY = regionTop - clientPos.y;
 
@@ -229,6 +234,7 @@ class RegionSelect extends Component {
 			data={rect.data}
 			key={index}
 			index={index}
+			zoom={this.props.zoom}
 			dataRenderer={this.props.regionRenderer}
 			onCropStart={(event) => this.onRegionMoveStart(event, index)}
 			changing={index === this.regionChangeIndex}
@@ -256,18 +262,37 @@ class RegionSelect extends Component {
 	
 		return null;
 	}
+	onImageLoad({ target:img }) {
+		this.setState({
+			imageDimensions: {
+				height: img.offsetHeight,
+				width: img.offsetWidth
+			}
+		});
+	}
+
 	render () {
 		const regions = this.props.regions;
+		let imageStyle = {};
+		if (this.state && this.state.imageDimensions) {
+			imageStyle = {
+				width: this.state.imageDimensions.width * this.props.zoom,
+				height: this.state.imageDimensions.height * this.props.zoom
+			};
+		}
+		
 		return (
 			<div
 				ref='image'
 				style={objectAssign({}, style.RegionSelect, this.props.style)}
-				className={this.props.className}
-				onTouchStart={this.onComponentMouseTouchDown}
-				onMouseDown={this.onComponentMouseTouchDown}>
-				{regions.map(this.renderRect.bind(this))}
-				{this.renderDebug()}
-				{this.props.children}
+				className={this.props.className}>
+				<div className="image-container" style={style.ContainerStyle}
+					onTouchStart={this.onComponentMouseTouchDown}
+					onMouseDown={this.onComponentMouseTouchDown}>
+					{this.renderDebug()}
+					{regions.map(this.renderRect.bind(this))}
+					<img src={this.imageSrc} style={imageStyle} onLoad={this.onImageLoad} />
+				</div>
 			</div>
 		);
 	}
@@ -281,7 +306,9 @@ RegionSelect.propTypes = {
 	maxRegions: PropTypes.number,
 	debug: PropTypes.bool,
 	className: PropTypes.string,
-	style: PropTypes.object
+	style: PropTypes.object,
+	zoom: PropTypes.number,
+	regionData: PropTypes.object
 };
 RegionSelect.defaultProps = {
 	maxRegions: Infinity,
