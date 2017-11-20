@@ -1,11 +1,8 @@
 const handleSize = 8;
 const style = {
 	ContainerStyle: {
-		width: '100vw',
-		height: '100vh',
 		position: 'relative',
-		overflow: 'auto',
-		border: '1px solid black'
+		overflow: 'auto'
 	},
 	Region: {
 		position: 'absolute',
