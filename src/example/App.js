@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import objectAssign from 'object-assign';
 import RegionSelect from '../RegionSelect';
 
-require('../style.scss');
+require('./style.css');
 
 class App extends Component {
 	constructor (props) {
