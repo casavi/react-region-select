@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { PropTypes } from 'prop-types'; 
 import objectAssign from 'object-assign';
 import Region from './Region';
-import style from './style';
 
 class RegionSelect extends Component {
 	constructor (props) {
@@ -290,9 +289,9 @@ class RegionSelect extends Component {
 		return (
 			<div
 				ref='image'
-				style={objectAssign({}, style.RegionSelect, this.props.style)}
-				className={this.props.className}>
-				<div className="image-container" style={style.ContainerStyle}
+				style={objectAssign({}, this.props.style)}
+				className={`region-select ${this.props.className}`}>
+				<div className="container-style image-container"
 					onTouchStart={this.onComponentMouseTouchDown}
 					onMouseDown={this.onComponentMouseTouchDown}>
 					{this.renderDebug()}
