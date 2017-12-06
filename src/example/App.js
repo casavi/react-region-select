@@ -43,10 +43,22 @@ class App extends Component {
 	}
 	render() {
 		return (
-			<div>
-				<RegionSelect maxRegions={1} regions={this.state.regions} onChange={this.onChange} regionRenderer={this.regionRenderer}>
-					<img src='/static/example-doc.jpg' width='700px'/>
-				</RegionSelect>
+			<div style={{ display: 'flex' }}>
+				<div style={{ flexGrow: 1, flexShrink: 1, width: '50%' }}>
+					<RegionSelect
+						maxRegions={1}
+						regions={this.state.regions}
+						constraint
+						onChange={this.onChange}
+						regionRenderer={this.regionRenderer}
+						style={{ border: '1px solid black' }}
+					>
+						<img src='/static/example-doc.jpg' width='100%'/>
+					</RegionSelect>
+				</div>
+				<div style={{ flexGrow: 1, flexShrink: 1, width: '50%', padding: 15 }}>
+					Select something with your mouse on the left side
+				</div>
 			</div>
 		);
 	}
