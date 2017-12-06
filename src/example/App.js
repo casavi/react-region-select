@@ -42,12 +42,16 @@ class App extends Component {
 		}
 	}
 	render() {
+		const regionStyle = {
+			background: 'rgba(255, 0, 0, 0.5)'
+		};
 		return (
 			<div style={{ display: 'flex' }}>
 				<div style={{ flexGrow: 1, flexShrink: 1, width: '50%' }}>
 					<RegionSelect
 						maxRegions={1}
 						regions={this.state.regions}
+            regionStyle={regionStyle}
 						constraint
 						onChange={this.onChange}
 						regionRenderer={this.regionRenderer}
