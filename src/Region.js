@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { PropTypes } from 'prop-types'; 
 import objectAssign from 'object-assign';
-import style from './style';
 
 class Region extends Component {
 	constructor (props) {
@@ -10,10 +9,10 @@ class Region extends Component {
 	renderHandles () {
 		return (
 			<div>
-				<div data-dir='se' style={style.RegionHandleSE} />
-				<div data-dir='sw' style={style.RegionHandleSW} />
-				<div data-dir='nw' style={style.RegionHandleNW} />
-				<div data-dir='ne' style={style.RegionHandleNE} />
+				<div data-dir='se' className='region-handle-se' />
+				<div data-dir='sw' className='region-handle-sw' />
+				<div data-dir='nw' className='region-handle-nw' />
+				<div data-dir='ne' className='region-handle-ne' />
 			</div>
 		);
 	}
@@ -32,7 +31,8 @@ class Region extends Component {
 
 		return (
 			<div
-				style={objectAssign({}, style.Region, localStyle, this.props.customStyle, this.props.data.regionStyle)}
+				style={objectAssign({}, localStyle, this.props.customStyle, this.props.data.regionStyle)}
+				className='region'
 				onMouseDown={this.props.onCropStart}
 				onTouchStart={this.props.onCropStart}
 				data-wrapper="wrapper"
