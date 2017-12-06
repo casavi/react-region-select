@@ -29,9 +29,10 @@ class Region extends Component {
 			isChanging: this.props.changing,
 			index: this.props.index
 		};
+
 		return (
 			<div
-				style={objectAssign({}, style.Region, localStyle, this.props.customStyle)}
+				style={objectAssign({}, style.Region, localStyle, this.props.customStyle, this.props.data.regionStyle)}
 				onMouseDown={this.props.onCropStart}
 				onTouchStart={this.props.onCropStart}
 				data-wrapper="wrapper"
