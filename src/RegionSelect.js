@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { PropTypes } from 'prop-types'; 
 import objectAssign from 'object-assign';
 import Region from './Region';
+import {
+	regionSelect as regionSelectStyle,
+	container as containerStyle
+} from './style';
 
 class RegionSelect extends Component {
 	constructor (props) {
@@ -12,8 +16,6 @@ class RegionSelect extends Component {
 		this.onRegionMoveStart = this.onRegionMoveStart.bind(this);
 		this.onImageLoad = this.onImageLoad.bind(this);
 		this.regionCounter = 0;
-		const { props: { src } } = this.props.children;
-		this.imageSrc = src;
 	}
 	componentDidMount() {
 		document.addEventListener('mousemove', this.onDocMouseTouchMove);
@@ -276,8 +278,7 @@ class RegionSelect extends Component {
 		});
 	}
 
-	render () {
-		const regions = this.props.regions;
+	renderChildren () {
 		let imageStyle = {};
 		if (this.state && this.state.imageDimensions) {
 			imageStyle = {
@@ -285,18 +286,26 @@ class RegionSelect extends Component {
 				height: this.state.imageDimensions.height * this.props.zoom
 			};
 		}
-		
+
+		return React.Children.map(this.props.children, (({ props: { src } }, key) => 
+			<img key={key} src={src} style={imageStyle} onLoad={this.onImageLoad} />
+		));
+	}
+
+	render () {
+		const regions = this.props.regions;
+
 		return (
 			<div
 				ref='image'
 				style={objectAssign({}, this.props.style)}
-				className={`region-select ${this.props.className}`}>
-				<div className="container-style image-container"
+				className={`${regionSelectStyle} region-select ${this.props.className}`}>
+				<div className={`${containerStyle} container-style image-container`}
 					onTouchStart={this.onComponentMouseTouchDown}
 					onMouseDown={this.onComponentMouseTouchDown}>
 					{this.renderDebug()}
 					{regions.map(this.renderRect.bind(this))}
-					<img src={this.imageSrc} style={imageStyle} onLoad={this.onImageLoad} />
+					{this.renderChildren()}
 				</div>
 			</div>
 		);

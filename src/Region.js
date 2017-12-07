@@ -1,18 +1,22 @@
 import React, { Component } from 'react';
 import { PropTypes } from 'prop-types'; 
 import objectAssign from 'object-assign';
+import {
+	region as regionStyle,
+	regionHandleSE as handleSEstyle,
+	regionHandleSW as handleSWstyle,
+	regionHandleNW as handleNWstyle,
+	regionHandleNE as handleNEstyle
+} from './style';
 
 class Region extends Component {
-	constructor (props) {
-		super(props);
-	}
 	renderHandles () {
 		return (
 			<div>
-				<div data-dir='se' className='region-handle-se' />
-				<div data-dir='sw' className='region-handle-sw' />
-				<div data-dir='nw' className='region-handle-nw' />
-				<div data-dir='ne' className='region-handle-ne' />
+				<div data-dir='se' className={`${handleSEstyle} region-handle-se`} />
+				<div data-dir='sw' className={`${handleSWstyle} region-handle-sw`} />
+				<div data-dir='nw' className={`${handleNWstyle} region-handle-nw`} />
+				<div data-dir='ne' className={`${handleNEstyle} region-handle-ne`} />
 			</div>
 		);
 	}
@@ -32,7 +36,7 @@ class Region extends Component {
 		return (
 			<div
 				style={objectAssign({}, localStyle, this.props.customStyle, this.props.data.regionStyle)}
-				className='region'
+				className={`${regionStyle} region`}
 				onMouseDown={this.props.onCropStart}
 				onTouchStart={this.props.onCropStart}
 				data-wrapper="wrapper"

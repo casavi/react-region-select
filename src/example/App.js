@@ -86,12 +86,14 @@ class App extends Component {
 						regions={this.state.regions}
 						regionStyle={regionStyle}
 						regionData={defaultRegionData}
+						zoom={zoom}
 						constraint
 						onChange={this.onChange}
 						regionRenderer={this.regionRenderer}
 						style={{ border: '1px solid black' }}
 					>
-						<img src='/static/example-doc.jpg' width='100%'/>
+						<img src='/static/example-doc.jpg' name="first" width='700px'/>
+						<img src='/static/example-doc.jpg' name="second" width='700px'/>
 					</RegionSelect>
 				</div>
 				<div style={{ flexGrow: 1, flexShrink: 1, width: '50%', padding: 15 }}>
