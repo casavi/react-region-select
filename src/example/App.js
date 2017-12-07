@@ -81,7 +81,8 @@ class App extends Component {
 			<div>
 				<input type="range" min="1" max="5" value={zoom} onChange={this.onChangeZoom} />
 				<RegionSelect maxRegions={3} zoom={zoom} regionData={defaultRegionData} regions={this.state.regions} onChange={this.onChange} regionRenderer={this.regionRenderer}>
-					<img src='/static/example-doc.jpg' width='700px'/>
+					<img src='/static/example-doc.jpg' name="first" width='700px'/>
+					<img src='/static/example-doc.jpg' name="second" width='700px'/>
 				</RegionSelect>
 			</div>
 		);
