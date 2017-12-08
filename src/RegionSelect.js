@@ -16,6 +16,7 @@ class RegionSelect extends Component {
 		this.onRegionMoveStart = this.onRegionMoveStart.bind(this);
 		this.onImageLoad = this.onImageLoad.bind(this);
 		this.regionCounter = 0;
+		this.state = {};
 	}
 	componentDidMount() {
 		document.addEventListener('mousemove', this.onDocMouseTouchMove);
@@ -34,20 +35,20 @@ class RegionSelect extends Component {
 		document.removeEventListener('touchcancel', this.onDocMouseTouchEnd);
 	}
 	getClientPos(e) {
-		let pageX, pageY;
+		let clientX, clientY;
 
 		if (e.touches) {
-			pageX = e.touches[0].pageX;
-			pageY = e.touches[0].pageY;
+			clientX = e.touches[0].clientX;
+			clientY = e.touches[0].clientY;
 		} else {
-			pageX = e.pageX;
-			pageY = e.pageY;
+			clientX = e.clientX;
+			clientY = e.clientY;
 		}
-		const [{ scrollLeft, scrollTop, offsetLeft, offsetTop }] = document.getElementsByClassName('image-container');
-
+		const [el] = document.getElementsByClassName('image-container');
+		const { left, top } = el.getBoundingClientRect();
 		return {
-			x: (pageX + scrollLeft - offsetLeft) / this.props.zoom,
-			y: (pageY + scrollTop - offsetTop) / this.props.zoom 
+			x: (clientX - left) / this.props.zoom,
+			y: (clientY - top) / this.props.zoom
 		};
 	}
 	onDocMouseTouchMove (event) {
@@ -59,7 +60,8 @@ class RegionSelect extends Component {
 		const clientPos = this.getClientPos(event);
 		const regionChangeData = this.regionChangeData;
 		let x, y, width, height;
-		if (!regionChangeData.isMove) {			
+
+		if (!regionChangeData.isMove) {
 			let x1Pc, y1Pc, x2Pc, y2Pc;
 			x1Pc = regionChangeData.clientPosXStart;
 			y1Pc = regionChangeData.clientPosYStart;
@@ -69,6 +71,16 @@ class RegionSelect extends Component {
 			y = Math.min(y1Pc, y2Pc);
 			width = Math.abs(x1Pc - x2Pc);
 			height = Math.abs(y1Pc - y2Pc);
+
+			if (this.props.constraint) {
+				const [container] = document.getElementsByClassName('image-container');
+				const { width: maxWidth, height: maxHeight } = container.getBoundingClientRect();
+				x = x < 0 ? 0 : x;
+				y = y < 0 ? 0 : y;
+
+				width = x2Pc >= maxWidth ?  Math.abs(x1Pc - maxWidth) : width;
+				height = y2Pc >= maxHeight ?  Math.abs(y1Pc - maxHeight) : height;
+			}
 		} else {
 			let diffx = updatingRegion.width / 2;
 			let diffy = updatingRegion.height / 2;
@@ -78,10 +90,19 @@ class RegionSelect extends Component {
 			width = updatingRegion.width;
 			height = updatingRegion.height;
 			if (this.props.constraint){
-				if (x + width >= 100) { x = Math.round(100 - width); }
-				if (y + height >= 100) { y = Math.round(100 - height); }
-				if (x <= 0) { x = 0; }
-				if (y <= 0) { y = 0; }
+				const [container] = document.getElementsByClassName('image-container');
+				const { width: maxWidth, height: maxHeight } = container.getBoundingClientRect();
+				x = x < 0 ? 0 : x;
+				y = y < 0 ? 0 : y;
+				if (x + width >= maxWidth) {
+					x = updatingRegion.x;
+					width = maxWidth - x;
+				}
+				// taking in account the select box height and zoom
+				if ((y + height) * this.props.zoom >= maxHeight - this.props.bottomMargin) {
+					y = updatingRegion.y;
+					height = updatingRegion.height;
+				}
 			}
 		}
 
@@ -92,9 +113,13 @@ class RegionSelect extends Component {
 			height: height,
 			isChanging: true
 		};
+
 		this.props.onChange([
 			...this.props.regions.slice(0, index),
-			objectAssign({}, updatingRegion, rect),
+			{
+				...updatingRegion,
+				...rect
+			},
 			...this.props.regions.slice(index + 1)
 		]);
 	}
@@ -163,7 +188,7 @@ class RegionSelect extends Component {
 		const [container] = document.getElementsByClassName('image-container');
 
 		const rectTop = rect.top + window.pageYOffset + container.offsetTop - docEl.clientTop;
-		const rectLeft = rect.left + window.pageXOffset + container.offsetLeft - docEl.clientLeft ;
+		const rectLeft = rect.left + window.pageXOffset + container.offsetLeft - docEl.clientLeft;
 		return {
 			top: rectTop / this.props.zoom,
 			left: rectLeft / this.props.zoom
@@ -263,26 +288,34 @@ class RegionSelect extends Component {
 	
 		return null;
 	}
-	onImageLoad({ target:img }) {
+	onImageLoad({ target:img }, key) {
+		const { imageDimensions } = this.state;
 		this.setState({
 			imageDimensions: {
-				height: img.offsetHeight,
-				width: img.offsetWidth
+				...imageDimensions,
+				[key]: {
+					height: img.offsetHeight,
+					width: img.offsetWidth
+				}
 			}
 		});
 	}
 
 	renderChildren () {
-		let imageStyle = {};
-		if (this.state && this.state.imageDimensions) {
-			imageStyle = {
-				width: this.state.imageDimensions.width * this.props.zoom,
-				height: this.state.imageDimensions.height * this.props.zoom
-			};
-		}
+		const getImageStyle = (key) => {
+			let imageStyle = {};
+			if (this.state && this.state.imageDimensions && this.state.imageDimensions[key]) {
+				imageStyle = {
+					width: this.state.imageDimensions[key].width * this.props.zoom,
+					height: this.state.imageDimensions[key].height * this.props.zoom
+				};
+			}
+
+			return imageStyle;
+		};
 
 		return React.Children.map(this.props.children, (({ props: { src } }, key) => 
-			<img key={key} src={src} style={imageStyle} onLoad={this.onImageLoad} />
+			<img key={key} src={src} style={(getImageStyle.bind(this,key)())} onLoad={(e) => this.onImageLoad(e, key)} />
 		));
 	}
 
@@ -293,7 +326,7 @@ class RegionSelect extends Component {
 			<div
 				ref='image'
 				style={objectAssign({}, this.props.style)}
-				className={`${regionSelectStyle} region-select ${this.props.className}`}>
+				className={`${regionSelectStyle} region-select ${this.props.className || ''}`}>
 				<div className={`${containerStyle} container-style image-container`}
 					onTouchStart={this.onComponentMouseTouchDown}
 					onMouseDown={this.onComponentMouseTouchDown}>
@@ -316,13 +349,15 @@ RegionSelect.propTypes = {
 	className: PropTypes.string,
 	style: PropTypes.object,
 	zoom: PropTypes.number,
-	regionData: PropTypes.object
+	regionData: PropTypes.object,
+	bottomMargin: PropTypes.number
 };
 RegionSelect.defaultProps = {
 	maxRegions: Infinity,
 	debug: false,
 	regions: [],
-	constraint: false
+	constraint: false,
+	bottomMargin: 20
 };
 
 function isSubElement (el, check) {

@@ -22,8 +22,8 @@ class Region extends Component {
 	}
 	render () {
 		const localStyle = {
-			width: this.props.width * this.props.zoom + 'px',
-			height: this.props.height * this.props.zoom + 'px',
+			width: `${this.props.width * this.props.zoom}px`,
+			height: `${this.props.height * this.props.zoom}px`,
 			left: `${this.props.x * this.props.zoom}px`,
 			top: `${this.props.y * this.props.zoom}px`
 		};
