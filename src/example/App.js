@@ -79,8 +79,8 @@ class App extends Component {
 
 		return (
 			<div style={{ display: 'flex' }}>
-				<input type="range" min="1" max="5" value={zoom} onChange={this.onChangeZoom} />
 				<div style={{ flexGrow: 1, flexShrink: 1, width: '50%' }}>
+					<input type="range" min="1" max="5" value={zoom} onChange={this.onChangeZoom} />
 					<RegionSelect
 						maxRegions={1}
 						regions={this.state.regions}
