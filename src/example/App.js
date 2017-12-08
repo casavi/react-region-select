@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import objectAssign from 'object-assign';
 import RegionSelect from '../RegionSelect';
 
-require('../style.scss');
+require('../style.css');
 
 class App extends Component {
 	constructor (props) {
@@ -78,11 +78,27 @@ class App extends Component {
 		let { zoom } = this.state;
 
 		return (
-			<div>
-				<input type="range" min="1" max="5" value={zoom} onChange={this.onChangeZoom} />
-				<RegionSelect maxRegions={3} zoom={zoom} regionData={defaultRegionData} regions={this.state.regions} onChange={this.onChange} regionRenderer={this.regionRenderer}>
-					<img src='/static/example-doc.jpg' width='700px'/>
-				</RegionSelect>
+			<div style={{ display: 'flex' }}>
+				<div style={{ flexGrow: 1, flexShrink: 1, width: '50%' }}>
+					<input type="range" min="1" max="5" value={zoom} onChange={this.onChangeZoom} />
+					<RegionSelect
+						maxRegions={1}
+						regions={this.state.regions}
+						regionStyle={regionStyle}
+						regionData={defaultRegionData}
+						zoom={zoom}
+						constraint
+						onChange={this.onChange}
+						regionRenderer={this.regionRenderer}
+						style={{ border: '1px solid black' }}
+					>
+						<img src='/static/example-doc.jpg' name="first" width='700px'/>
+						<img src='/static/example-doc.jpg' name="second" width='700px'/>
+					</RegionSelect>
+				</div>
+				<div style={{ flexGrow: 1, flexShrink: 1, width: '50%', padding: 15 }}>
+					Select something with your mouse on the left side
+				</div>
 			</div>
 		);
 	}
