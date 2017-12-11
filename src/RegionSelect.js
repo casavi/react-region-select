@@ -45,10 +45,12 @@ class RegionSelect extends Component {
 			clientY = e.clientY;
 		}
 		const [el] = document.getElementsByClassName('image-container');
+		const { scrollLeft, scrollTop } = el;
 		const { left, top } = el.getBoundingClientRect();
+
 		return {
-			x: (clientX - left) / this.props.zoom,
-			y: (clientY - top) / this.props.zoom
+			x: (clientX - left + scrollLeft) / this.props.zoom,
+			y: (clientY - top + scrollTop) / this.props.zoom
 		};
 	}
 	onDocMouseTouchMove (event) {
@@ -294,8 +296,8 @@ class RegionSelect extends Component {
 			imageDimensions: {
 				...imageDimensions,
 				[key]: {
-					height: img.offsetHeight,
-					width: img.offsetWidth
+					height: img.offsetHeight / this.props.zoom,
+					width: img.offsetWidth / this.props.zoom
 				}
 			}
 		});
@@ -315,7 +317,7 @@ class RegionSelect extends Component {
 		};
 
 		return React.Children.map(this.props.children, (({ props: { src } }, key) => 
-			<img key={key} src={src} style={(getImageStyle.bind(this,key)())} onLoad={(e) => this.onImageLoad(e, key)} />
+			<img key={key} src={src} style={(getImageStyle.bind(this, key)())} onLoad={(e) => this.onImageLoad(e, key)} />
 		));
 	}
 
