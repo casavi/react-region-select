@@ -9,8 +9,10 @@ class App extends Component {
 		super(props);
 		this.regionRenderer = this.regionRenderer.bind(this);
 		this.onChange = this.onChange.bind(this);
+		this.onChangeZoom = this.onChangeZoom.bind(this);
 		this.state = {
-			regions: []
+			regions: [],
+			zoom: 1
 		};
 	}
 	onChange (regions) {
@@ -59,24 +61,39 @@ class App extends Component {
 			);
 		}
 	}
+	onChangeZoom({ target: { value }}) {
+		this.setState({
+			zoom: parseInt(value)
+		});
+	}
 	render() {
 		const regionStyle = {
 			background: 'rgba(255, 0, 0, 0.5)'
 		};
 
+		const defaultRegionData = {
+			regionStyle,
+			dataType: '3'
+		};
+		let { zoom } = this.state;
+
 		return (
 			<div style={{ display: 'flex' }}>
 				<div style={{ flexGrow: 1, flexShrink: 1, width: '50%' }}>
+					<input type="range" min="1" max="5" value={zoom} onChange={this.onChangeZoom} />
 					<RegionSelect
 						maxRegions={1}
 						regions={this.state.regions}
-            regionStyle={regionStyle}
+						regionStyle={regionStyle}
+						regionData={defaultRegionData}
+						zoom={zoom}
 						constraint
 						onChange={this.onChange}
 						regionRenderer={this.regionRenderer}
 						style={{ border: '1px solid black' }}
 					>
-						<img src='/static/example-doc.jpg' width='100%'/>
+						<img src='/static/example-doc.jpg' name="first" width='700px'/>
+						<img src='/static/example-doc.jpg' name="second" width='700px'/>
 					</RegionSelect>
 				</div>
 				<div style={{ flexGrow: 1, flexShrink: 1, width: '50%', padding: 15 }}>
