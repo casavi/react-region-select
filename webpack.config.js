@@ -16,19 +16,20 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new ExtractTextPlugin('app.css', {
+    new ExtractTextPlugin({
+      filename: 'app.css',
       allChunks: true
     })
   ],
   module: {
     loaders: [{
       test: /\.js$/,
-      loaders: ['react-hot', 'babel'],
+      loaders: ['react-hot-loader/webpack', 'babel-loader'],
       include: path.join(__dirname, 'src')
     },
       {
         test: /\.css/,
-        loaders: ['style', 'css-loader']
+        loaders: ['style-loader', 'css-loader']
       }
     ]
   }
