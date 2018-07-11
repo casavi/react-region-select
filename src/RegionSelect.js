@@ -116,6 +116,9 @@ class RegionSelect extends Component {
 		}
 	}
 	onComponentMouseTouchDown (event) {
+		if (this.props.disabled) {
+			return;
+		}
 		if (event.target.dataset.wrapper || event.target.dataset.dir || isSubElement(event.target, (el) => el.dataset && el.dataset.wrapper)) {
 			return;
 		}
@@ -142,7 +145,7 @@ class RegionSelect extends Component {
 			clientPosYStart: clientPos.y,
 			imageWidth: this.refs.image.offsetWidth,
 			imageHeight: this.refs.image.offsetHeight,
-			isMove: false
+			isMove: false,
 		};
 
 		if (this.props.regions.length < this.props.maxRegions) {
@@ -220,7 +223,7 @@ class RegionSelect extends Component {
 			imageWidth: this.refs.image.offsetWidth,
 			imageHeight: this.refs.image.offsetHeight,
 			isMove: resizeDir ? false : true,
-			resizeDir: resizeDir
+			resizeDir: resizeDir,
 		};
 
 		this.regionChangeIndex = index;
@@ -242,16 +245,16 @@ class RegionSelect extends Component {
 		/>;
 	}
 	render () {
-		const regions = this.props.regions;
+		const { regions, className, children, debug } = this.props;
 		return (
 			<div
 				ref='image'
 				style={objectAssign({}, style.RegionSelect, this.props.style)}
-				className={this.props.className}
+				className={className}
 				onTouchStart={this.onComponentMouseTouchDown}
 				onMouseDown={this.onComponentMouseTouchDown}>
 				{regions.map(this.renderRect.bind(this))}
-				{this.props.debug
+				{debug
 					? <table style={{position:'absolute', right: 0, top: 0}}>
 							<tbody>
 								{regions.map((rect, index) => {
@@ -267,22 +270,23 @@ class RegionSelect extends Component {
 							</tbody>
 						</table>
 					: null }
-				{this.props.children}
+				{children}
 			</div>
 		);
 	}
 }
 RegionSelect.propTypes = {
-	constraint: PropTypes.bool,
-	regions: PropTypes.array,
 	children: PropTypes.any,
+	className: PropTypes.string,
+	constraint: PropTypes.bool,
+	debug: PropTypes.bool,
+	disabled: PropTypes.bool,
+	maxRegions: PropTypes.number,
 	onChange: PropTypes.func.isRequired,
 	regionRenderer: PropTypes.func,
-	maxRegions: PropTypes.number,
-	debug: PropTypes.bool,
-	className: PropTypes.string,
+	regions: PropTypes.array,
+	regionStyle: PropTypes.object,
 	style: PropTypes.object,
-	regionStyle: PropTypes.object
 };
 RegionSelect.defaultProps = {
 	maxRegions: Infinity,

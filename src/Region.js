@@ -4,9 +4,6 @@ import objectAssign from 'object-assign';
 import style from './style';
 
 class Region extends Component {
-	constructor (props) {
-		super(props);
-	}
 	renderHandles () {
 		return (
 			<div>
@@ -43,6 +40,7 @@ class Region extends Component {
 		);
 	}
 }
+
 Region.propTypes = {
 	x: PropTypes.number.isRequired,
 	y: PropTypes.number.isRequired,

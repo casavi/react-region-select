@@ -71,6 +71,10 @@ You can use isChanging to hide complex UI while the user is changing the region.
 
 Display a table with information about each region. Useful for debugging.
 
+#### disabled (bool)
+
+Use if you need to temporary disable region selection. You need to clear already selected regions manually.
+
 #### constraint (bool)
 
 Constrain selection to underlying children. Default: false.
