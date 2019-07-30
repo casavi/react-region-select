@@ -1,4 +1,6 @@
 const handleSize = 8;
+const handleMinWidth = '1vw';
+const handleMinHeight = '1vh';
 const style = {
 	Region: {
 		position: 'absolute',
@@ -12,6 +14,8 @@ const style = {
 		right: -1 * handleSize/2,
 		width: handleSize,
 		height: handleSize,
+		minWidth: handleMinWidth,
+		maxHeight: handleMinHeight,
 		outline: '1px solid rgba(0,0,0,0.5)',
 		border: '1px solid rgba(255,255,255,0.5)',
 		cursor: 'se-resize'
@@ -22,6 +26,8 @@ const style = {
 		left: -1 * handleSize/2,
 		width: handleSize,
 		height: handleSize,
+		minWidth: handleMinWidth,
+		maxHeight: handleMinHeight,
 		outline: '1px solid rgba(0,0,0,0.5)',
 		border: '1px solid rgba(255,255,255,0.5)',
 		cursor: 'sw-resize'
@@ -31,6 +37,8 @@ const style = {
 		top: -1 * handleSize/2,
 		left: -1 * handleSize/2,
 		width: handleSize,
+		minWidth: handleMinWidth,
+		maxHeight: handleMinHeight,
 		height: handleSize,
 		outline: '1px solid rgba(0,0,0,0.5)',
 		border: '1px solid rgba(255,255,255,0.5)',
@@ -42,6 +50,8 @@ const style = {
 		right: -1 * handleSize/2,
 		width: handleSize,
 		height: handleSize,
+		minWidth: handleMinWidth,
+		maxHeight: handleMinHeight,
 		outline: '1px solid rgba(0,0,0,0.5)',
 		border: '1px solid rgba(255,255,255,0.5)',
 		cursor: 'ne-resize'
