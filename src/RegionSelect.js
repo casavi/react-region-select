@@ -174,7 +174,7 @@ class RegionSelect extends Component {
 				event: 'start',
 				source: event,
 				data: rect.data,
-				index: 0
+				index: this.props.regions.length
 			});
 
 			this.regionChangeIndex = this.props.regions.length;
@@ -190,9 +190,9 @@ class RegionSelect extends Component {
 				event: 'start',
 				source: event,
 				data: rect.data,
-				index: 0
+				index: this.props.regions.length
 			});
-			
+
 			this.regionChangeIndex = this.props.maxRegions - 1;
 		}
 	}
