@@ -102,7 +102,8 @@ class RegionSelect extends Component {
 		], {
 				event: 'resize',
 				source: event,
-				region: updatingRegion
+				region: updatingRegion,
+				index: index
 			});
 	}
 	onDocMouseTouchEnd () {
@@ -129,7 +130,8 @@ class RegionSelect extends Component {
 			], {
 				event: 'end',
 				source: event,
-				region: updatingRegion
+				region: updatingRegion,
+				index: index
 			});
 		}
 	}
@@ -171,7 +173,8 @@ class RegionSelect extends Component {
 			this.props.onChange(this.props.regions.concat(rect), {
 				event: 'start',
 				source: event,
-				data: rect.data
+				data: rect.data,
+				index: 0
 			});
 
 			this.regionChangeIndex = this.props.regions.length;
@@ -186,8 +189,10 @@ class RegionSelect extends Component {
 			], {
 				event: 'start',
 				source: event,
-				data: rect.data
+				data: rect.data,
+				index: 0
 			});
+			
 			this.regionChangeIndex = this.props.maxRegions - 1;
 		}
 	}
