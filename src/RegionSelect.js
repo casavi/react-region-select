@@ -91,11 +91,20 @@ class RegionSelect extends Component {
 			height: height,
 			isChanging: true
 		};
+		/**
+			Add event with resize and region
+			**/
+
 		this.props.onChange([
 			...this.props.regions.slice(0, index),
 			objectAssign({}, updatingRegion, rect),
 			...this.props.regions.slice(index + 1)
-		]);
+		], {
+				event: 'resize',
+				source: event,
+				region: updatingRegion,
+				index: index
+			});
 	}
 	onDocMouseTouchEnd () {
 		if (this.isChanging) {
@@ -108,11 +117,22 @@ class RegionSelect extends Component {
 			};
 			this.regionChangeIndex = null;
 			this.regionChangeData = null;
+
+			/**
+			Add event with end and region
+			**/
+
+
 			this.props.onChange([
 				...this.props.regions.slice(0, index),
 				objectAssign({}, updatingRegion, changes),
 				...this.props.regions.slice(index + 1)
-			]);
+			], {
+				event: 'end',
+				source: event,
+				region: updatingRegion,
+				index: index
+			});
 		}
 	}
 	onComponentMouseTouchDown (event) {
@@ -135,6 +155,7 @@ class RegionSelect extends Component {
 			isChanging: true
 		};
 		this.regionCounter += 1;
+		
 		this.regionChangeData = {
 			imageOffsetLeft: imageOffset.left,
 			imageOffsetTop: imageOffset.top,
@@ -146,13 +167,32 @@ class RegionSelect extends Component {
 		};
 
 		if (this.props.regions.length < this.props.maxRegions) {
-			this.props.onChange(this.props.regions.concat(rect));
+			/**
+			Add event with start
+			**/
+			this.props.onChange(this.props.regions.concat(rect), {
+				event: 'start',
+				source: event,
+				data: rect.data,
+				index: this.props.regions.length
+			});
+
 			this.regionChangeIndex = this.props.regions.length;
 		} else {
+			/**
+			Add event with start
+			**/
+
 			this.props.onChange([
 				...this.props.regions.slice(0, this.props.maxRegions - 1),
 				rect
-			]);
+			], {
+				event: 'start',
+				source: event,
+				data: rect.data,
+				index: this.props.regions.length
+			});
+
 			this.regionChangeIndex = this.props.maxRegions - 1;
 		}
 	}

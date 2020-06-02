@@ -13,7 +13,8 @@ class App extends Component {
 			regions: []
 		};
 	}
-	onChange (regions) {
+	onChange (regions, event) {
+		console.log('onchange', [event]);
 		this.setState({
 			regions: regions
 		});
